@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.expo/
+dist/
+
+# API Keys & Secrets
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Build outputs
+ios/Pods/
+ios/build/
+android/app/build/
+android/build/
+*.app
+*.ipa
+*.apk
+
+# System Files
+.DS_Store
+Thumbs.db

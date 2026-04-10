@@ -7,6 +7,8 @@
 - **Backend**: Supabase (Postgres+PostGIS) / Firebase
 - **State/Cache**: TanStack Query + MMKV (Offline-first)
 - **Auth**: Mandatory Google OAuth on boot
+- **Monitoring**: Sentry (Silent error/performance tracking)
+- **Infrastructure**: GitHub Actions (Cron-based scrapers for zero-cost background runs)
 
 ## 2. Global Logic
 - **Community Gems**: Public, anonymized (no IDs/timestamps). 4-5 stars only. Max 2 compressed photos + legal ownership checkbox.
@@ -23,12 +25,13 @@
 - **Aesthetic**: "Pulsing Radar" UI (Minimum Functionality compliance).
 - **Performance**: Marker Clustering + Bounding Box DB queries.
 - **Moderation**: DEV = Open; PROD = AI (OpenAI) + 3-vote community validation.
-- **Fail-Safe**: Silent degradation for scraper/API outages.
+- **Fail-Safe**: Silent degradation (Sentry logs the failure, UI hides the component).
 
 ## 5. Deployment
 - **Velvet Rope**: Invite-only rollout (100 -> 1000 -> 5000).
 - **Stale Data**: UI Disclaimer: "Confirm at source; community aggregated."
 - **Monetization**: Ad revenue fuels migration to Premium APIs.
+- **Legal**: Public `PRIVACY.md` required for background location App Store approval.
 
 ## 6. Stretch Goals
 - Guest browsing, AI NLP context filtering, Yelp/Places API integration + Resy/OpenTable deep-links, Recency Decay (90 days) + Insider Status.
