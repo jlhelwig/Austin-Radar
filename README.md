@@ -1,7 +1,8 @@
 # City Radar Spec (MVP: Austin Radar)
 
 ## 1. Tech Stack
-- **Framework**: React Native (Expo)
+- **Framework**: React Native (Expo Managed Workflow)
+- **Development**: Expo Go (Fast iterations) / Development Builds (Native dependencies)
 - **Map**: `react-native-maps` (Native, zero API cost)
 - **Backend**: Supabase (Postgres+PostGIS) / Firebase
 - **State/Cache**: TanStack Query + MMKV (Offline-first)
