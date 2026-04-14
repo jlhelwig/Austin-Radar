@@ -25,14 +25,20 @@ const queryClient = new QueryClient();
  * - Sentry for monitoring.
  */
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+// ... (keep previous imports)
+
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <AppNavigator />
-        <StatusBar style="light" />
-      </NavigationContainer>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <AppNavigator />
+          <StatusBar style="light" />
+        </NavigationContainer>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 

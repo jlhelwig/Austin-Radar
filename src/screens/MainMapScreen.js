@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useState, useRef, useMemo } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import MapView from 'react-native-maps';
 import { Colors, Spacing, Typography } from '../theme/tokens';
 import RadarPulse from '../components/RadarPulse';
 import GemMarker from '../components/GemMarker';
-import provenWinners from '../data/proven_winners.json';
+import GemSubmissionModal from '../components/GemSubmissionModal';
+import { useGems } from '../hooks/useGems';
 
 /**
  * MainMapScreen: The core radar interface.
  * 
- * Features:
- * - Full-screen MapView with custom neon style.
- * - Pulsing radar overlay.
- * - Gem markers from seeded "Proven Winners" data.
- * - Bounding-box detection for future Supabase fetching.
+ * Refactored for Milestone 3:
+ * - Integrates useGems hook for live data.
+ * - Mark Gem FAB and Submission Modal.
  */
 
 const MainMapScreen = () => {
+  const { gems, submitGem } = useGems();
+  const bottomSheetRef = useRef(null);
+  
   const [region, setRegion] = useState({
     latitude: 30.2672,
     longitude: -97.7431,
@@ -24,21 +26,13 @@ const MainMapScreen = () => {
     longitudeDelta: 0.05,
   });
 
-  const [visibleGems, setVisibleGems] = useState([]);
+  const filterGemsInViewport = useMemo(() => {
+    const latMin = region.latitude - region.latitudeDelta / 2;
+    const latMax = region.latitude + region.latitudeDelta / 2;
+    const lngMin = region.longitude - region.longitudeDelta / 2;
+    const lngMax = region.longitude + region.longitudeDelta / 2;
 
-  useEffect(() => {
-    // Initial load: Filter gems within current region
-    filterGems(region);
-  }, []);
-
-  const filterGems = (currentRegion) => {
-    // Simple bounding box logic for seeded data
-    const latMin = currentRegion.latitude - currentRegion.latitudeDelta / 2;
-    const latMax = currentRegion.latitude + currentRegion.latitudeDelta / 2;
-    const lngMin = currentRegion.longitude - currentRegion.longitudeDelta / 2;
-    const lngMax = currentRegion.longitude + currentRegion.longitudeDelta / 2;
-
-    const filtered = provenWinners.filter(gem => {
+    return gems.filter(gem => {
       const { latitude, longitude } = gem.coordinates;
       return (
         latitude >= latMin && 
@@ -47,13 +41,22 @@ const MainMapScreen = () => {
         longitude <= lngMax
       );
     });
+  }, [gems, region]);
 
-    setVisibleGems(filtered);
+  const handleMarkGem = () => {
+    bottomSheetRef.current?.expand();
   };
 
-  const handleRegionChange = (newRegion) => {
-    setRegion(newRegion);
-    filterGems(newRegion);
+  const onGemSubmit = (form) => {
+    // Inject current map center coordinates
+    const newGem = {
+      ...form,
+      coordinates: {
+        latitude: region.latitude,
+        longitude: region.longitude,
+      },
+    };
+    submitGem(newGem);
   };
 
   return (
@@ -61,12 +64,11 @@ const MainMapScreen = () => {
       <MapView 
         style={styles.map}
         initialRegion={region}
-        onRegionChangeComplete={handleRegionChange}
+        onRegionChangeComplete={setRegion}
         customMapStyle={darkMapStyle}
-        // provider={PROVIDER_GOOGLE} // Allow native maps (Apple) for zero cost in dev
       >
-        {visibleGems.map(gem => (
-          <GemMarker key={gem.id} gem={gem} />
+        {filterGemsInViewport.map(gem => (
+          <GemMarker key={gem.id || gem.timestamp} gem={gem} />
         ))}
       </MapView>
 
@@ -76,8 +78,17 @@ const MainMapScreen = () => {
 
       <View style={styles.overlay}>
         <Text style={styles.radarText}>[ RADAR ACTIVE ]</Text>
-        <Text style={styles.signalText}>{visibleGems.length} SIGNALS FOUND</Text>
+        <Text style={styles.signalText}>{filterGemsInViewport.length} SIGNALS FOUND</Text>
       </View>
+
+      <TouchableOpacity style={styles.fab} onPress={handleMarkGem}>
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
+
+      <GemSubmissionModal 
+        bottomSheetRef={bottomSheetRef} 
+        onSubmit={onGemSubmit}
+      />
     </View>
   );
 };
@@ -87,10 +98,7 @@ const darkMapStyle = [
   { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
   { "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
   { "elementType": "labels.text.stroke", "stylers": [{ "color": "#212121" }] },
-  { "featureType": "administrative", "elementType": "geometry", "stylers": [{ "color": "#757575" }] },
-  { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
   { "featureType": "road", "elementType": "geometry.fill", "stylers": [{ "color": "#2c2c2c" }] },
-  { "featureType": "road", "elementType": "labels.text.fill", "stylers": [{ "color": "#8a8a8a" }] },
   { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#000000" }] }
 ];
 
@@ -130,6 +138,28 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 2,
     fontWeight: '600',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: Colors.neonGreen,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.neonGreen,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  fabText: {
+    fontSize: 36,
+    color: Colors.deepBlack,
+    fontWeight: '300',
+    marginTop: -4,
   },
 });
 
