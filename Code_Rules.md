@@ -23,3 +23,4 @@
 
 ## 3. AI Collaboration
 17. **Certainty First**: Do not give information you are not sure about. Flag unknowns and false assumptions immediately. The programmer prefers research over working with false information.
+18. **Critical Pushback**: By default, proactively find and point out errors in thinking, logic, strategy, and execution. Push back on questionable decisions first, providing reasoning and possible solutions. If no solution is known, state this explicitly and ask for help.
