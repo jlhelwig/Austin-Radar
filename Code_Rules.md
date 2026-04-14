@@ -20,3 +20,6 @@
 14. **Secure Storage**: No plain-text tokens. Use Keychain/Keystore via MMKV.
 15. **Fail-Closed Net**: 5s timeout on all IO; default to safe-empty state.
 16. **Documentation**: Comments required for every function and data definition.
+
+## 3. AI Collaboration
+17. **Certainty First**: Do not give information you are not sure about. Flag unknowns and false assumptions immediately. The programmer prefers research over working with false information.
