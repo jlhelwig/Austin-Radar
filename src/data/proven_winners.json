@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "The Driskill",
+    "category": "Hotel/Bar",
+    "coordinates": {
+      "latitude": 30.2681,
+      "longitude": -97.7410
+    },
+    "stars": 5,
+    "instructions": "Classic lobby bar. Check the portrait gallery."
+  },
+  {
+    "id": "2",
+    "name": "Midnight Cowboy",
+    "category": "Speakeasy",
+    "coordinates": {
+      "latitude": 30.2673,
+      "longitude": -97.7394
+    },
+    "stars": 5,
+    "instructions": "Reservation required. Press the 'Harry Craddock' buzzer.",
+    "password": "N/A - Guest list only"
+  },
+  {
+    "id": "3",
+    "name": "Elephant Room",
+    "category": "Jazz Bar",
+    "coordinates": {
+      "latitude": 30.2655,
+      "longitude": -97.7431
+    },
+    "stars": 4,
+    "instructions": "Basement level. Cash cover usually required."
+  },
+  {
+    "id": "4",
+    "name": "Outer Heaven Discovery",
+    "category": "Disco/Pub",
+    "coordinates": {
+      "latitude": 30.2588,
+      "longitude": -97.7385
+    },
+    "stars": 5,
+    "instructions": "Great neon vibes. East Side winner."
+  }
+]

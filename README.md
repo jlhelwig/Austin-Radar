@@ -4,17 +4,17 @@
 - **Framework**: React Native (Expo Managed Workflow)
 - **Development**: Expo Go (Fast iterations) / Development Builds (Native dependencies)
 - **Map**: `react-native-maps` (Native, zero API cost)
-- **Backend**: Supabase (Postgres+PostGIS) / Firebase
+- **Backend**: Supabase (Postgres + PostGIS)
 - **State/Cache**: TanStack Query + MMKV (Offline-first)
 - **Auth**: Mandatory Google OAuth on boot
 - **Monitoring**: Sentry (Silent error/performance tracking)
-- **Infrastructure**: GitHub Actions (Cron-based scrapers for zero-cost background runs)
+- **Infrastructure**: GitHub Actions (Cron-based scrapers for low-cost event/social API polling)
 
 ## 2. Global Logic
 - **Community Gems**: Public, anonymized (no IDs/timestamps). 4-5 stars only. Max 2 compressed photos + legal ownership checkbox.
 - **Cold Start**: Seeded cache of "Proven Winners" (Rooftops, Pubs).
 - **Core Entities**: Speakeasies (Door instructions + Passwords).
-- **Live Radar**: Multi-scraper X/Twitter redundancy.
+- **Live Radar**: Multi-source signal redundancy (Low-cost event/social APIs).
   - **DEV**: Predefined location matching; 2-signal redundancy rule bypassed by default (push all signals) with a manual "noise opt-out".
   - **PROD**: Requires 2+ signals for confirmed push alerts; uses keyword matching for bars/venues.
 
@@ -27,7 +27,7 @@
 - **Aesthetic**: "Pulsing Radar" UI (Minimum Functionality compliance).
 - **Performance**: Marker Clustering + Bounding Box DB queries.
 - **Moderation**: 
-  - **DEV**: Open (Moderation Bypass enabled).
+  - **DEV**: Open (Moderation Bypass enabled). 4-5 star filter remains active.
   - **PROD**: AI (OpenAI via Supabase Edge Functions) + 3-vote community validation.
 - **Fail-Safe**: Silent degradation (Sentry logs the failure, UI hides the component).
 

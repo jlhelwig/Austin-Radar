@@ -3,7 +3,7 @@
 ## 1. Components
 - **Background Location**: Validate polling (X min/Y miles) and 4-hour hard termination.
 - **API Sync**: Verify API pings occur at the rate defined in Battery Config despite OS throttling.
-- **Battery**: Log % drop: 4h active vs background.
+- **Battery**: Manual monitoring of % drop in Dev (4h active vs background).
 - **Silent Fail**: Mock null scraper/API data; verify UI hides without errors.
 - **Offline**: Disable data; verify MMKV "Proven Winners" render.
 
