@@ -49,7 +49,9 @@ This guide outlines the logical sequence for building **Austin Radar**. Each mil
 ### 🛠 Tasks
 - [ ] **Background Task**: Register the Expo `TM.Task` for 15-min location polling.
 - [ ] **Battery Settings**: Build the settings UI so users can select their Kill-Switch and Polling frequency.
-- [ ] **Signal Logic**: Create a function that triggers a push notification ONLY if 2+ signals match a location.
+- [ ] **Signal Logic**: Implement notification triggers.
+    - **Dev**: Bypass 2-signal rule by default; include "Noise Opt-Out" setting.
+    - **Prod**: Trigger push ONLY if 2+ signals match a location (keywords/venues).
 - [ ] **Scraper Logic**: (GitHub Actions) Script the X/Twitter scraping logic for our city-variable.
 
 **💡 AI Tip**: Ask me: *"Implement the background location task with the user-configurable battery auto-kill switch."*
@@ -60,7 +62,8 @@ This guide outlines the logical sequence for building **Austin Radar**. Each mil
 *Goal: Production hardening.*
 
 ### 🛠 Tasks
-- [ ] **AI Moderation (PROD)**: Hook the Gem submission into the OpenAI Moderation endpoint.
+- [ ] **AI Moderation (PROD)**: Hook Gem submissions into OpenAI Moderation via **Supabase Edge Functions**.
+    - **Dev**: Implement a "Moderation Bypass" flag for rapid testing and iteration.
 - [ ] **Sentry Integration**: Initialize Sentry for silent-fail reporting.
 - [ ] **App Store Assets**: Configuration of `app.json` icons, splash screen, and naming.
 

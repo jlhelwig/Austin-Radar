@@ -14,7 +14,9 @@
 - **Community Gems**: Public, anonymized (no IDs/timestamps). 4-5 stars only. Max 2 compressed photos + legal ownership checkbox.
 - **Cold Start**: Seeded cache of "Proven Winners" (Rooftops, Pubs).
 - **Core Entities**: Speakeasies (Door instructions + Passwords).
-- **Live Radar**: Multi-scraper X/Twitter redundancy. Requires 2+ signals for confirmed push alerts.
+- **Live Radar**: Multi-scraper X/Twitter redundancy.
+  - **DEV**: Predefined location matching; 2-signal redundancy rule bypassed by default (push all signals) with a manual "noise opt-out".
+  - **PROD**: Requires 2+ signals for confirmed push alerts; uses keyword matching for bars/venues.
 
 ## 3. Location & Battery
 - **Discovery**: City-wide mapping. Push alerts for urgent/live events only.
@@ -24,7 +26,9 @@
 ## 4. Moderation & UX
 - **Aesthetic**: "Pulsing Radar" UI (Minimum Functionality compliance).
 - **Performance**: Marker Clustering + Bounding Box DB queries.
-- **Moderation**: DEV = Open; PROD = AI (OpenAI) + 3-vote community validation.
+- **Moderation**: 
+  - **DEV**: Open (Moderation Bypass enabled).
+  - **PROD**: AI (OpenAI via Supabase Edge Functions) + 3-vote community validation.
 - **Fail-Safe**: Silent degradation (Sentry logs the failure, UI hides the component).
 
 ## 5. Deployment

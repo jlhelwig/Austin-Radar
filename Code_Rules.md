@@ -2,9 +2,9 @@
 *NASA Power of Ten + Modern Extensions for Mobile Reliability.*
 
 ## 1. NASA Power of Ten
-1. **Simple Control**: No `goto`, `setjmp`, `longjmp`, or recursion.
+1. **Simple Control**: No `goto`, `setjmp`, `longjmp`, or recursion (Library implementations are exempt).
 2. **Fixed Loops**: All loops must have statically provable upper bounds.
-3. **Static Allocation**: No dynamic memory allocation after boot Initialization.
+3. **Static Allocation**: Minimize excessive allocation; no dynamic memory allocation in core loop/logic after boot.
 4. **Function Limit**: Max 60 lines per function.
 5. **Assertions**: Min 2 side-effect-free assertions per function.
 6. **Data Scope**: Declare data at the smallest possible visibility scope.
