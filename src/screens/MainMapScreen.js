@@ -7,6 +7,7 @@ import GemMarker from '../components/GemMarker';
 import GemSubmissionModal from '../components/GemSubmissionModal';
 import { useGems } from '../hooks/useGems';
 import { useSignalPolling } from '../hooks/useSignalPolling';
+import { loadRadarSettings } from '../store/storage';
 
 /**
  * MainMapScreen: The core radar interface.
@@ -18,7 +19,8 @@ import { useSignalPolling } from '../hooks/useSignalPolling';
 
 const MainMapScreen = () => {
   const { gems, submitGem } = useGems();
-  const { signals, isPolling } = useSignalPolling({ intervalMs: 300000, muted: false });
+  const { muted, intervalMs } = loadRadarSettings();
+  const { signals, isPolling } = useSignalPolling({ intervalMs, muted });
   const bottomSheetRef = useRef(null);
   
   const [region, setRegion] = useState({

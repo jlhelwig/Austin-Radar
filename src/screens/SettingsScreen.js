@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, Spacing, Typography } from '../theme/tokens';
+import { saveRadarSettings, loadRadarSettings } from '../store/storage';
 
 /**
  * SettingsScreen
@@ -19,10 +20,13 @@ const POLLING_OPTIONS = [
 ];
 
 const SettingsScreen = ({ onSave }) => {
-  const [muted, setMuted] = useState(false);
-  const [selectedInterval, setSelectedInterval] = useState(300000);
+  // Load persisted settings as defaults
+  const defaults = loadRadarSettings();
+  const [muted, setMuted] = useState(defaults.muted);
+  const [selectedInterval, setSelectedInterval] = useState(defaults.intervalMs);
 
   const handleSave = () => {
+    saveRadarSettings(muted, selectedInterval);
     if (onSave) onSave({ muted, intervalMs: selectedInterval });
   };
 
