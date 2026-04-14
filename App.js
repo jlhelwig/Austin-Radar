@@ -3,32 +3,27 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from '@sentry/react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
-// Initialize Sentry
+// Initialize Sentry for silent error and performance monitoring
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN || '',
-  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-  // We recommend adjusting this value in production.
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 1.0, // Reduce in PROD
 });
 
 const queryClient = new QueryClient();
 
 /**
  * App Component
- * 
+ *
  * Provisions global providers:
- * - QueryClientProvider for server state.
- * - NavigationContainer for routing.
- * - Sentry for monitoring.
+ * - GestureHandlerRootView: Required for bottom-sheet and gesture interactions.
+ * - QueryClientProvider: Server state management via TanStack Query.
+ * - NavigationContainer: React Navigation routing.
+ * - Sentry.wrap: Silent error/performance monitoring wrapper.
  */
-
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-// ... (keep previous imports)
-
 function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

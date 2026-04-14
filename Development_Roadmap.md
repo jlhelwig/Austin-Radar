@@ -36,13 +36,13 @@ This guide outlines the logical sequence for building **Austin Radar**. Each mil
 
 ---
 
-## 🟡 Milestone 3: The Gem Pipeline (Submissions)
+## ✅ Milestone 3: The Gem Pipeline (Submissions) [COMPLETED]
 *Goal: Allow users to contribute 4/5-star spots.*
 
 ### 🛠 [DEV] Tasks
-- [ ] **Submission Modal**: Implement the bottom-sheet UI for adding a Gem.
-- [ ] **Dev Moderation Bypass**: Allow instant submission for trusted Dev accounts.
-- [ ] **Star Filter**: Enforce the "4-5 star" submission rule at the UI level.
+- [x] **Submission Modal**: Implement the bottom-sheet UI for adding a Gem.
+- [x] **Dev Moderation Bypass**: Allow instant submission for trusted Dev accounts.
+- [x] **Star Filter**: Enforce the "4-5 star" submission rule at the UI level.
 
 ### 🛠 [PROD] Tasks
 - [ ] **Photo Compression**: Use `expo-image-manipulator` for aggressive client-side optimization.
@@ -51,13 +51,13 @@ This guide outlines the logical sequence for building **Austin Radar**. Each mil
 
 ---
 
-## 🔴 Milestone 4: Live Radar (Signals & Alerts)
+## ✅ Milestone 4: Live Radar (Signals & Alerts) [COMPLETED]
 *Goal: Real-time event notifications via Mastodon/Low-cost APIs.*
 
 ### 🛠 [DEV] Tasks
-- [ ] **Signal Ingestion**: Implement the parser for Mastodon/RSS event feeds.
-- [ ] **Dev Push Bypass**: Set "Single-Signal" alert triggers for debugging.
-- [ ] **Noise Opt-Out**: Build the settings toggle to mute high-frequency Dev signals.
+- [x] **Signal Ingestion**: Mastodon hashtag parser (`mastodonFeed.js`) with venue keyword matching.
+- [x] **Dev Push Bypass**: Single-signal alert triggers via DEV_MODE env flag.
+- [x] **Noise Opt-Out**: Settings toggle via `SettingsScreen.js`.
 
 ### 🛠 [PROD] Tasks
 - [ ] **Background Task**: Register the Expo `TM.Task` for 15-min background polling.

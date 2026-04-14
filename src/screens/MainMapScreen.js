@@ -6,6 +6,7 @@ import RadarPulse from '../components/RadarPulse';
 import GemMarker from '../components/GemMarker';
 import GemSubmissionModal from '../components/GemSubmissionModal';
 import { useGems } from '../hooks/useGems';
+import { useSignalPolling } from '../hooks/useSignalPolling';
 
 /**
  * MainMapScreen: The core radar interface.
@@ -17,6 +18,7 @@ import { useGems } from '../hooks/useGems';
 
 const MainMapScreen = () => {
   const { gems, submitGem } = useGems();
+  const { signals, isPolling } = useSignalPolling({ intervalMs: 300000, muted: false });
   const bottomSheetRef = useRef(null);
   
   const [region, setRegion] = useState({
@@ -77,8 +79,8 @@ const MainMapScreen = () => {
       </View>
 
       <View style={styles.overlay}>
-        <Text style={styles.radarText}>[ RADAR ACTIVE ]</Text>
-        <Text style={styles.signalText}>{filterGemsInViewport.length} SIGNALS FOUND</Text>
+        <Text style={styles.radarText}>{isPolling ? '[ SCANNING... ]' : '[ RADAR ACTIVE ]'}</Text>
+        <Text style={styles.signalText}>{signals.length} LIVE · {filterGemsInViewport.length} GEMS</Text>
       </View>
 
       <TouchableOpacity style={styles.fab} onPress={handleMarkGem}>
