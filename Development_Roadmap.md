@@ -66,12 +66,12 @@ This guide outlines the logical sequence for building **Austin Radar**. Each mil
 
 ---
 
-## 🟣 Milestone 5: Polish & Security
+## ✅ Milestone 5: Polish & Security [DEV COMPLETE]
 *Goal: Production hardening and App Store readiness.*
 
 ### 🛠 [DEV] Tasks
-- [ ] **Mock Scenarios**: Create scripts to simulate high-traffic "Radar Pulse" events.
-- [ ] **UI Polish**: Finalize edge-case layouts (offline modes, zero-state map).
+- [x] **Mock Scenarios**: `mockSignals.js` with quiet/burst/spread test cases; DEV `[BURST]` button on map.
+- [x] **UI Polish**: `OfflineBanner` (animated slide-in), `ZeroStateMap`, Settings navigation, `isOffline` state.
 
 ### 🛠 [PROD] Tasks
 - [ ] **Community Validation**: Implement the 3-vote "Unlock" logic for unverified gems.

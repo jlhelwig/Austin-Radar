@@ -16,6 +16,7 @@ import { evaluateSignals, requestNotificationPermissions } from '../api/signalSe
 export const useSignalPolling = ({ intervalMs = 60000, muted = false }) => {
   const [signals, setSignals] = useState([]);
   const [isPolling, setIsPolling] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   const [lastPollAt, setLastPollAt] = useState(null);
   const appState = useRef(AppState.currentState);
   const timer = useRef(null);
@@ -26,6 +27,7 @@ export const useSignalPolling = ({ intervalMs = 60000, muted = false }) => {
       const fresh = await fetchLiveSignals();
       setSignals(fresh);
       setLastPollAt(new Date());
+      setIsOffline(false);
 
       if (!muted) {
         await evaluateSignals(fresh, (alert) => {
@@ -33,6 +35,7 @@ export const useSignalPolling = ({ intervalMs = 60000, muted = false }) => {
         });
       }
     } catch (err) {
+      setIsOffline(true);
       console.warn('[Radar] Polling error:', err.message);
     } finally {
       setIsPolling(false);
@@ -61,5 +64,5 @@ export const useSignalPolling = ({ intervalMs = 60000, muted = false }) => {
     };
   }, [poll, intervalMs]);
 
-  return { signals, isPolling, lastPollAt };
+  return { signals, isPolling, isOffline, lastPollAt };
 };

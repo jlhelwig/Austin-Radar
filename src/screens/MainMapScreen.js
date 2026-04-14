@@ -5,24 +5,27 @@ import { Colors, Spacing, Typography } from '../theme/tokens';
 import RadarPulse from '../components/RadarPulse';
 import GemMarker from '../components/GemMarker';
 import GemSubmissionModal from '../components/GemSubmissionModal';
+import { OfflineBanner, ZeroStateMap } from '../components/EdgeStateUI';
 import { useGems } from '../hooks/useGems';
 import { useSignalPolling } from '../hooks/useSignalPolling';
 import { loadRadarSettings } from '../store/storage';
+import { injectMockSignals } from '../api/mockSignals';
 
 /**
  * MainMapScreen: The core radar interface.
- * 
- * Refactored for Milestone 3:
- * - Integrates useGems hook for live data.
- * - Mark Gem FAB and Submission Modal.
+ *
+ * Milestone 5: Added edge-case UI (offline banner, zero state)
+ * and DEV mock signal trigger button.
  */
 
-const MainMapScreen = () => {
-  const { gems, submitGem } = useGems();
+const DEV_MODE = process.env.EXPO_PUBLIC_DEV_MODE === 'true';
+
+const MainMapScreen = ({ navigation }) => {
+  const { gems, submitGem, isLoading } = useGems();
   const { muted, intervalMs } = loadRadarSettings();
-  const { signals, isPolling } = useSignalPolling({ intervalMs, muted });
+  const { signals, isPolling, isOffline } = useSignalPolling({ intervalMs, muted });
   const bottomSheetRef = useRef(null);
-  
+
   const [region, setRegion] = useState({
     latitude: 30.2672,
     longitude: -97.7431,
@@ -39,9 +42,9 @@ const MainMapScreen = () => {
     return gems.filter(gem => {
       const { latitude, longitude } = gem.coordinates;
       return (
-        latitude >= latMin && 
-        latitude <= latMax && 
-        longitude >= lngMin && 
+        latitude >= latMin &&
+        latitude <= latMax &&
+        longitude >= lngMin &&
         longitude <= lngMax
       );
     });
@@ -51,8 +54,13 @@ const MainMapScreen = () => {
     bottomSheetRef.current?.expand();
   };
 
+  const handleMockBurst = async () => {
+    await injectMockSignals('burst', (alert) => {
+      console.log('[DEV] Alert triggered:', alert.venueName);
+    });
+  };
+
   const onGemSubmit = (form) => {
-    // Inject current map center coordinates
     const newGem = {
       ...form,
       coordinates: {
@@ -63,9 +71,11 @@ const MainMapScreen = () => {
     submitGem(newGem);
   };
 
+  const showZeroState = !isLoading && filterGemsInViewport.length === 0 && signals.length === 0;
+
   return (
     <View style={styles.container}>
-      <MapView 
+      <MapView
         style={styles.map}
         initialRegion={region}
         onRegionChangeComplete={setRegion}
@@ -76,21 +86,49 @@ const MainMapScreen = () => {
         ))}
       </MapView>
 
+      {/* Zero state — no gems or signals in view */}
+      {showZeroState && <ZeroStateMap />}
+
+      {/* Radar pulse centered on screen */}
       <View style={styles.radarContainer} pointerEvents="none">
         <RadarPulse />
       </View>
 
+      {/* Offline banner — slides in when network unavailable */}
+      <OfflineBanner visible={isOffline} />
+
+      {/* Status overlay */}
       <View style={styles.overlay}>
-        <Text style={styles.radarText}>{isPolling ? '[ SCANNING... ]' : '[ RADAR ACTIVE ]'}</Text>
-        <Text style={styles.signalText}>{signals.length} LIVE · {filterGemsInViewport.length} GEMS</Text>
+        <Text style={styles.radarText}>
+          {isPolling ? '[ SCANNING... ]' : '[ RADAR ACTIVE ]'}
+        </Text>
+        <Text style={styles.signalText}>
+          {signals.length} LIVE · {filterGemsInViewport.length} GEMS
+        </Text>
       </View>
 
+      {/* Navigation buttons */}
+      <TouchableOpacity
+        style={styles.settingsButton}
+        onPress={() => navigation.navigate('Settings')}
+      >
+        <Text style={styles.settingsText}>⚙</Text>
+      </TouchableOpacity>
+
+      {/* DEV: Mock signal burst trigger */}
+      {DEV_MODE && (
+        <TouchableOpacity style={styles.mockButton} onPress={handleMockBurst}>
+          <Text style={styles.mockText}>[ BURST ]</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Mark Gem FAB */}
       <TouchableOpacity style={styles.fab} onPress={handleMarkGem}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
 
-      <GemSubmissionModal 
-        bottomSheetRef={bottomSheetRef} 
+      <GemSubmissionModal
+        bottomSheetRef={bottomSheetRef}
         onSubmit={onGemSubmit}
       />
     </View>
@@ -142,6 +180,39 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 2,
     fontWeight: '600',
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.grayMid,
+  },
+  settingsText: {
+    color: Colors.grayLow,
+    fontSize: 18,
+  },
+  mockButton: {
+    position: 'absolute',
+    bottom: 100,
+    left: 20,
+    backgroundColor: 'rgba(255,255,0,0.15)',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.warning,
+  },
+  mockText: {
+    ...Typography.label,
+    color: Colors.warning,
+    fontSize: 10,
   },
   fab: {
     position: 'absolute',
