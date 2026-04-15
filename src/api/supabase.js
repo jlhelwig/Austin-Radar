@@ -6,21 +6,32 @@ import Constants from 'expo-constants';
  * Supabase Client Initialization
  * 
  * Uses environment variables from expo-constants (extra) or process.env.
- * Note: For Expo Go, ensure these are configured in app.json/app.config.js 
- * or passed via EAS secrets.
+ * Falls back to a no-op mock client in DEV when credentials are absent.
  */
 
 const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl || process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase URL or Anon Key is missing. Check your environment variables.');
+let supabase;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: false,
+    },
+  });
+} else {
+  console.warn('[Supabase] URL or Anon Key missing — using offline-only mode.');
+  // Mock client that returns empty results, allowing seed data to load
+  supabase = {
+    from: () => ({
+      select: () => Promise.resolve({ data: [], error: null }),
+      insert: () => ({ select: () => Promise.resolve({ data: [], error: { message: 'Offline mode' } }) }),
+    }),
+  };
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: false,
-  },
-});
+export { supabase };
+

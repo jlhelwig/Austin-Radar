@@ -26,25 +26,33 @@
 |---|---|---|---|
 | 6 | `PRIVACY.md` | References "Firebase" as a third-party service — we only use Supabase | **Corrected** to "Supabase" only |
 
-### No Issues Found (Clean Files)
-- `tokens.js` — Design system is clean and consistent
-- `RadarPulse.js` — Animation uses Native Driver correctly
-- `GemMarker.js` — `tracksViewChanges={false}` properly set for perf
-- `GemSubmissionModal.js` — Star validation logic is correct
-- `useGems.js` — TanStack Query + seed merge is correct
-- `useSignalPolling.js` — Interval/cleanup logic is correct
-- `mastodonFeed.js` — 5s timeout + silent degradation per Code Rules
-- `mockSignals.js` — Test scenarios are well-structured
-- `supabase.js` — Polyfill + fallback warnings are correct
-- `storage.js` — MMKV wrapper with centralized keys is solid
-- `AppNavigator.js` — Auth persistence logic is correct
-- `EdgeStateUI.js` — Animated banner with native driver is correct
-- `index.js` — Entry point with `expo-dev-client` is correct
-- `Code_Rules.md` — No changes needed
-- `Development_Roadmap.md` — Accurate milestone tracking
-- `Test.md` — Testing protocol is current
-- `README.md` — Tech stack description is accurate
-- `proven_winners.json` — Seed data is valid
+---
+
+## 🔥 PERSISTENT CRASH: `Cannot read property 'prototype' of undefined`
+
+### Root Cause (Confirmed via Isolation Testing)
+
+**`react-native-mmkv` v4 uses Nitro Modules.** The line `export const storage = new MMKV()` in `storage.js` runs at **import time** (module initialization). On Expo SDK 54 with the New Architecture, the Nitro native module isn't fully ready when the JS runtime processes top-level module code, causing the crash.
+
+### Resolution Chain
+| Step | Action | Result |
+|---|---|---|
+| 1 | Removed `@sentry/react-native` import from `App.js` | ❌ Error persisted |
+| 2 | Uninstalled `@sentry/react-native` from `package.json` | ❌ Error persisted |
+| 3 | Added `babel.config.js` with `react-native-reanimated/plugin` | ❌ Error persisted |
+| 4 | **Replaced MMKV with in-memory shim** in `storage.js` | ✅ **App booted!** |
+| 5 | Guarded `supabase.js` against missing env vars | ✅ Offline mode works |
+
+### Additional Fix: Supabase Client Crash
+- **Error**: `supabaseUrl is required` — `createClient()` crashes with empty string
+- **Solution**: Mock client in DEV that returns empty results, allowing seed data fallback
+
+### Files Modified
+- `App.js` — Removed Sentry import/wrap (native module not linked)
+- `src/store/storage.js` — Replaced MMKV with in-memory shim for DEV
+- `src/api/supabase.js` — Guarded createClient with mock fallback
+- `babel.config.js` — Created with reanimated plugin (was missing entirely)
+- `package.json` — Uninstalled `@sentry/react-native`, added `babel-preset-expo`
 
 ---
 

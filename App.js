@@ -4,17 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Sentry from '@sentry/react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
-// Initialize Sentry only when a valid DSN is present (DEV has no Sentry org configured)
-const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
-if (SENTRY_DSN) {
-  Sentry.init({
-    dsn: SENTRY_DSN,
-    tracesSampleRate: 1.0, // Reduce in PROD
-  });
-}
+// NOTE: @sentry/react-native is installed but NOT linked for DEV builds.
+// Re-add the plugin to app.json and restore Sentry.wrap() for PROD.
 
 const queryClient = new QueryClient();
 
@@ -25,7 +18,6 @@ const queryClient = new QueryClient();
  * - GestureHandlerRootView: Required for bottom-sheet and gesture interactions.
  * - QueryClientProvider: Server state management via TanStack Query.
  * - NavigationContainer: React Navigation routing.
- * - Sentry.wrap: Silent error/performance monitoring wrapper.
  */
 function App() {
   return (
@@ -40,4 +32,5 @@ function App() {
   );
 }
 
-export default Sentry.wrap(App);
+export default App;
+

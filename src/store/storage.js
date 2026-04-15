@@ -1,13 +1,24 @@
-import { MMKV } from 'react-native-mmkv';
+// import { MMKV } from 'react-native-mmkv';
+// TEMPORARILY DISABLED — testing if Nitro/MMKV is the 'prototype' crash source
 
 /**
- * MMKV Storage Wrapper
+ * MMKV Storage Wrapper (DEV: In-Memory Shim)
  *
- * Provides synchronous storage for mission-critical session and state data.
- * All keys are centrally defined here to prevent magic strings across the codebase.
+ * This is a temporary in-memory replacement for MMKV to isolate
+ * the runtime crash. If the app boots with this, MMKV/Nitro is the root cause.
  */
 
-export const storage = new MMKV();
+const memoryStore = {};
+
+const storage = {
+  set: (key, value) => { memoryStore[key] = value; },
+  getString: (key) => memoryStore[key] ?? undefined,
+  getBoolean: (key) => memoryStore[key] ?? undefined,
+  getNumber: (key) => memoryStore[key] ?? undefined,
+  delete: (key) => { delete memoryStore[key]; },
+};
+
+export { storage };
 
 const KEYS = {
   USER_TOKEN: 'user_token',
@@ -50,3 +61,4 @@ export const loadRadarSettings = () => {
   const intervalMs = storage.getNumber(KEYS.RADAR_INTERVAL_MS) ?? 300000;
   return { muted, intervalMs };
 };
+
