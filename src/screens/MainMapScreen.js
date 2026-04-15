@@ -22,8 +22,8 @@ const DEV_MODE = process.env.EXPO_PUBLIC_DEV_MODE === 'true';
 
 const MainMapScreen = ({ navigation }) => {
   const { gems, submitGem, isLoading } = useGems();
-  const { muted, intervalMs } = loadRadarSettings();
-  const { signals, isPolling, isOffline } = useSignalPolling({ intervalMs, muted });
+  const [radarSettings] = useState(() => loadRadarSettings());
+  const { signals, isPolling, isOffline } = useSignalPolling(radarSettings);
   const bottomSheetRef = useRef(null);
 
   const [region, setRegion] = useState({

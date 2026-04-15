@@ -19,7 +19,7 @@ const POLLING_OPTIONS = [
   { label: '1 HOUR (Minimal)', value: 3600000 },
 ];
 
-const SettingsScreen = ({ onSave }) => {
+const SettingsScreen = ({ navigation, onSave }) => {
   // Load persisted settings as defaults
   const defaults = loadRadarSettings();
   const [muted, setMuted] = useState(defaults.muted);
@@ -28,6 +28,7 @@ const SettingsScreen = ({ onSave }) => {
   const handleSave = () => {
     saveRadarSettings(muted, selectedInterval);
     if (onSave) onSave({ muted, intervalMs: selectedInterval });
+    navigation.goBack();
   };
 
   return (

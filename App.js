@@ -7,11 +7,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from '@sentry/react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
-// Initialize Sentry for silent error and performance monitoring
-Sentry.init({
-  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN || '',
-  tracesSampleRate: 1.0, // Reduce in PROD
-});
+// Initialize Sentry only when a valid DSN is present (DEV has no Sentry org configured)
+const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: 1.0, // Reduce in PROD
+  });
+}
 
 const queryClient = new QueryClient();
 
