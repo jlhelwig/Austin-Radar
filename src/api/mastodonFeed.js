@@ -23,12 +23,18 @@ const VENUE_KEYWORDS = ['rainey', 'sixth street', '6th street', 'driskill', 'mid
 const fetchHashtagTimeline = async (hashtag) => {
   const url = `${MASTODON_INSTANCE}/api/v1/timelines/tag/${hashtag}?limit=20`;
 
-  const response = await fetch(url, {
-    signal: AbortSignal.timeout(5000), // Fail-Closed: 5s timeout per Code_Rules.md Rule 15
-  });
+  // Fail-Closed: 5s timeout per Code_Rules.md Rule 15
+  // AbortSignal.timeout() is not available in Hermes; use AbortController instead
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-  if (!response.ok) throw new Error(`Mastodon fetch failed: ${response.status}`);
-  return response.json();
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) throw new Error(`Mastodon fetch failed: ${response.status}`);
+    return response.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
 };
 
 /**
