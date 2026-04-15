@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest --verbose"
   },
   "dependencies": {
     "@expo/ngrok": "^4.1.0",
@@ -40,6 +41,8 @@
   },
   "private": true,
   "devDependencies": {
-    "babel-preset-expo": "^55.0.17"
+    "babel-preset-expo": "^55.0.17",
+    "jest": "^29.7.0",
+    "jest-expo": "^55.0.16"
   }
 }
