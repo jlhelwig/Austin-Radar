@@ -16,4 +16,4 @@
 
 ## 4. Third-Party Services
 - **Sentry**: Used for silent error reporting and performance monitoring.
-- **Supabase/Firebase**: Used for secure data storage and geospatial querying.
+- **Supabase**: Used for secure data storage, authentication, and geospatial querying.
